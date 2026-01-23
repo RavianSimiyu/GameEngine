@@ -5,24 +5,24 @@
 #include "core/logger.h"
 #include "core/kmemory.h"
 
-// Backend render context.
-static renderer_backend* backend = 0; 
+struct platform_state;
 
-b8 renderer_initialize(
-        const char* application_name,
-        struct platform_state* plat_state){
+// Backend render context.
+static renderer_backend* backend = 0;
+
+b8 renderer_initialize(const char* application_name, struct platform_state* plat_state) {
     backend = kallocate(sizeof(renderer_backend), MEMORY_TAG_RENDERER);
 
-    // TODO: Make this configurable.
-    renderer_backend_create(RENDERER_BACKEND_TYPE_VULKAN,plat_state,backend);
+    // TODO: make this configurable.
+    renderer_backend_create(RENDERER_BACKEND_TYPE_VULKAN, plat_state, backend);
     backend->frame_number = 0;
 
-   if (!backend->initialize(backend, application_name, plat_state)) {
-        KFATAL("Renderer backend failed to initialize. Shutting down.")
-            return FALSE;
-   }
+    if (!backend->initialize(backend, application_name, plat_state)) {
+        KFATAL("Renderer backend failed to initialize. Shutting down.");
+        return false;
+    }
 
-   return TRUE;
+    return true;
 }
 
 void renderer_shutdown() {
@@ -40,21 +40,26 @@ b8 renderer_end_frame(f32 delta_time) {
     return result;
 }
 
+void renderer_on_resized(u16 width, u16 height) {
+    if (backend) {
+        backend->resized(backend, width, height);
+    } else {
+        KWARN("renderer backend does not exist to accept resize: %i %i", width, height);
+    }
+}
+
 b8 renderer_draw_frame(render_packet* packet) {
     // If the begin frame returned successfully, mid-frame operations may continue.
     if (renderer_begin_frame(packet->delta_time)) {
 
-
-        // End the frame. If this fails, it is likey unrecoverable.
+        // End the frame. If this fails, it is likely unrecoverable.
         b8 result = renderer_end_frame(packet->delta_time);
 
         if (!result) {
-            KERROR("renderer_end_frame failed. Application shutting down ...");
-            return FALSE;
+            KERROR("renderer_end_frame failed. Application shutting down...");
+            return false;
         }
     }
 
-    return TRUE;
+    return true;
 }
-
-

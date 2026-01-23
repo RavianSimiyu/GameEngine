@@ -7,11 +7,34 @@
 #include <string.h>
 #include <stdarg.h>
 
-b8 initialize_logging(){
+typedef struct logger_system_state {
+    b8 initialized;
+} logger_system_state;
+
+logger_system_state* state_ptr;
+
+b8 initialize_logging(u64* memory_requirement, void* state){
+    *memory_requirement = sizeof(logger_system_state);
+    if(state == 0) {
+        return true;
+    }
+
+    state_ptr = state;
+    state_ptr->initialized = true;
+
+    // TODO: Remove this
+    KFATAL("A test message: %f", 3.14f);
+    KERROR("A test message: %f", 3.14f);
+    KWARN("A test message: %f", 3.14f);
+    KINFO("A test message: %f", 3.14f);
+    KDEBUG("A test message: %f", 3.14f);
+    KTRACE("A test message: %f", 3.14f);
+
 	//TODO: Create log file.
-	return TRUE;
+	return true;
 }
-void shutdown_logging(){
+void shutdown_logging(void* state){
+    state_ptr = 0;
 	//TODO:cleanup logging/write queued entries.
 }
 
@@ -21,7 +44,7 @@ void log_output(log_level level, const char* message, ...){
 
 	//Technically imposes a 32k character limit on a single log entry , but ...
 	//DONT DO THAT!!
-	const i32 msg_length = 32000;
+    #define msg_length 32000
 	char out_message[msg_length];
 	memset(out_message,0,sizeof(out_message));
 

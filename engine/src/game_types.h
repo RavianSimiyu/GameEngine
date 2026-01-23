@@ -4,7 +4,7 @@
 
 /**
  * Represents the basic game state in a game.
- * Called for creaion by the application.
+ * Called for creation by the application.
  */
 typedef struct game {
 	//The application configuration.
@@ -21,5 +21,8 @@ typedef struct game {
 
 	//Game-specific game state. Created and managed by the game.
 	void* state;
+    
+    // Application state.
+    void* application_state;
 } game;
 

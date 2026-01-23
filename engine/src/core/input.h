@@ -3,10 +3,10 @@
 #include "defines.h"
 
 typedef enum buttons {
-    MOUSE_BUTTON_LEFT,
-    MOUSE_BUTTON_RIGHT,
-    MOUSE_BUTTON_MIDDLE,
-    MOUSE_BUTTON_MAX
+    BUTTON_LEFT,
+    BUTTON_RIGHT,
+    BUTTON_MIDDLE,
+    BUTTON_MAX_BUTTONS
 } buttons;
 
 #define DEFINE_KEY(name, code) KEY_##name = code

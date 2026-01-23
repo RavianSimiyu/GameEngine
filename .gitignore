@@ -2,70 +2,16 @@
 # Build outputs / binaries
 # =========================
 bin/
+obj/
 build/
-out/
-dist/
 
-# Compiled objects / binaries
-*.o
-*.obj
-*.lo
-*.a
-*.lib
-*.dll
-*.so
-*.dylib
-*.exe
-*.out
-*.app
-
-# Debug / symbols
-*.pdb
-*.ilk
-*.map
-*.dSYM/
-
-# Precompiled headers
-*.gch
-*.pch
-*.ipch
-
-# =========================
-# Logs / cache
-# =========================
-*.log
-*.tmp
-*.cache
-
-# =========================
-# IDE / editor
-# =========================
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Visual Studio / MSVC
+# Visual Studio / VS workspace
 .vs/
-*.sln
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
+**/.vs/
+*.slnx
 *.VC.db
-*.opendb
-
-# CMake / Ninja
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
-compile_commands.json
-.ninja_deps
-.ninja_log
-
-# =========================
-# OS junk
-# =========================
-Thumbs.db
-Desktop.ini
-.DS_Store
+*.VC.opendb
+*.ipch
+*.db
+*.sqlite
+*.wsuo
