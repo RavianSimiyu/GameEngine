@@ -19,6 +19,9 @@
 
 #include "platform/platform.h"
 
+// Shaders
+#include "shaders/vulkan_object_shader.h"
+
 // static Vulkan context
 static vulkan_context context;
 static u32 cached_framebuffer_width = 0;
@@ -36,7 +39,7 @@ void create_command_buffers(renderer_backend* backend);
 void regenerate_framebuffers(renderer_backend* backend, vulkan_swapchain* swapchain, vulkan_renderpass* renderpass);
 b8 recreate_swapchain(renderer_backend* backend);
 
-b8 vulkan_renderer_backend_initialize(renderer_backend* backend, const char* application_name, struct platform_state* plat_state) {
+b8 vulkan_renderer_backend_initialize(renderer_backend* backend, const char* application_name) {
     // Function pointers
     context.find_memory_index = find_memory_index;
 
@@ -145,7 +148,7 @@ b8 vulkan_renderer_backend_initialize(renderer_backend* backend, const char* app
 
     // Surface
     KDEBUG("Creating Vulkan surface...");
-    if (!platform_create_vulkan_surface(plat_state, &context)) {
+    if (!platform_create_vulkan_surface(&context)) {
         KERROR("Failed to create platform surface!");
         return false;
     }
@@ -203,6 +206,12 @@ b8 vulkan_renderer_backend_initialize(renderer_backend* backend, const char* app
         context.images_in_flight[i] = 0;
     }
 
+    // Create builtin shaders
+    if(!vulkan_object_shader_create(&context, &context.object_shader)){
+        KERROR("Error loading built-in basic_lighting shader.");
+        return false;
+    }
+
     KINFO("Vulkan renderer initialized successfully.");
     return true;
 }
@@ -211,6 +220,8 @@ void vulkan_renderer_backend_shutdown(renderer_backend* backend) {
     vkDeviceWaitIdle(context.device.logical_device);
 
     // Destroy in the opposite order of creation.
+
+    vulkan_object_shader_destroy(&context, &context.object_shader);
 
     // Sync objects
     for (u8 i = 0; i < context.swapchain.image_count; ++i) {
